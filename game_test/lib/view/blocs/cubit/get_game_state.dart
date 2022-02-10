@@ -14,16 +14,23 @@ class GetGameLoading extends GetGameState {
 }
 
 class GetGameLoaded extends GetGameState {
-  final List<GameModel> gameModel;
-  final offset;
-  GetGameLoaded(this.gameModel, this.offset);
+  final List<GameModel> gameModels;
+  final int offset;
+  GetGameLoaded({
+    this.gameModels = const [],
+    this.offset = 0
+  });
 
-  GetGameLoaded copyWith(int? offset) {
+  GetGameLoaded addGames({
+    List<GameModel>? games,
+    int? offset
+  }){
     return GetGameLoaded(
-      gameModel, offset ?? this.offset
+      gameModels: games ?? gameModels,
+      offset: offset ?? this.offset
     );
   }
 
   @override
-  List<Object?> get props => [gameModel];
+  List<Object?> get props => [gameModels];
 }

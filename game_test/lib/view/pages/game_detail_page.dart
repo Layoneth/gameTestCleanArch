@@ -53,7 +53,58 @@ class GameDetailPage extends StatelessWidget {
               ),
             ),
           ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 16.0,),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  gameModel.checksum != null 
+                  ? TextGame( leftText: 'Checksum: ', text: gameModel.checksum!)
+                  : const SizedBox(),
+                  gameModel.rating != null 
+                    ? TextGame(leftText: 'Rating: ', text: gameModel.rating!.toString())
+                    : const SizedBox(),
+                  gameModel.url != null 
+                    ? TextGame(leftText: 'url: ', text: gameModel.url!)
+                    : const SizedBox(),
+                  gameModel.slug != null 
+                    ? TextGame(leftText: 'slug: ', text: gameModel.slug!)
+                    : const SizedBox(),
+                  gameModel.summary != null 
+                    ? TextGame(leftText: 'summary: ', text: gameModel.summary!)
+                    : const SizedBox(),
+                ],
+              ),
+            ),
+          )
         ]
+      ),
+    );
+  }
+}
+
+class TextGame extends StatelessWidget {
+  final String leftText;
+  final String text;
+  const TextGame({Key? key, required this.text, required this.leftText}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(
+        leftText + text,
+        style: const TextStyle(
+          fontSize: 16,
+          decoration: TextDecoration.none,
+          fontWeight: FontWeight.w500,
+          fontStyle: FontStyle.italic,
+          color: Color(0xff707070),
+        ),
       ),
     );
   }
