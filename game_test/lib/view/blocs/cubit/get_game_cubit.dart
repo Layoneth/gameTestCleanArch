@@ -20,7 +20,6 @@ class GetGameCubit extends Cubit<GetGameState> {
   }
 
   Future<void> scrollGames() async {
-    // emit(GetGameLoading());
     plusOffset();
     final games = await getGameUseCase.getGamesCall(offset);
     gamesSaved.addAll(games);
