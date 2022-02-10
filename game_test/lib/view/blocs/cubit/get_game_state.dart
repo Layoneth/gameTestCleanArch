@@ -14,8 +14,15 @@ class GetGameLoading extends GetGameState {
 }
 
 class GetGameLoaded extends GetGameState {
-  final List<GameModel>? gameModel;
-  GetGameLoaded(this.gameModel);
+  final List<GameModel> gameModel;
+  final offset;
+  GetGameLoaded(this.gameModel, this.offset);
+
+  GetGameLoaded copyWith(int? offset) {
+    return GetGameLoaded(
+      gameModel, offset ?? this.offset
+    );
+  }
 
   @override
   List<Object?> get props => [gameModel];

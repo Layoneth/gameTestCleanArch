@@ -6,8 +6,8 @@ class GetGameUseCase {
   final GamesRepository gamesRepo;
   GetGameUseCase(this.gamesRepo);
 
-  Future<List<GameModel>?> getGamesCall() async {
-    return gamesRepo.getGames();
+  Future<List<GameModel>> getGamesCall(int offset) async {
+    return gamesRepo.getGames(offset);
   }
 
 }

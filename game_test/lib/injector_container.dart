@@ -31,8 +31,8 @@ Future<void> initGames() async {
   sl.registerLazySingleton<GameRemoteDataSource>(
       () => GameRemoteDataSourceImp(sl()));
   
-  final database = await $FloorGameDatabase.databaseBuilder('games_database.db').build();
-  sl.registerLazySingleton<FloorDatabase>(() => database);
+  // final database = await $FloorGameDatabase.databaseBuilder('games_database.db').build();
+  // sl.registerLazySingleton<FloorDatabase>(() => database);
 
 
   //! External

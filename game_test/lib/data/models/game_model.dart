@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:floor/floor.dart';
+import 'package:game_test/data/models/screenshot_model.dart';
 
 @entity
 class GameModel {
@@ -9,6 +10,7 @@ class GameModel {
       required this.cover,
       required this.createdAt,
       required this.firstReleaseDate,
+      required this.screenshots,
       required this.name,
       required this.slug,
       required this.status,
@@ -26,6 +28,7 @@ class GameModel {
     final int? cover;
     final int? createdAt;
     final int? firstReleaseDate;
+    final List<ScreenshotModel>? screenshots;
     final String name;
     final String? slug;
     final int? status;
@@ -51,34 +54,38 @@ class GameModel {
     factory GameModel.fromMap(Map<String, dynamic> json) => GameModel(
         id: json["id"],
         category: json["category"],
-        cover: json["cover"] == null ? null : json["cover"],
+        cover: json["cover"],
         createdAt: json["created_at"],
-        firstReleaseDate: json["first_release_date"] == null ? null : json["first_release_date"],
+        firstReleaseDate: json["first_release_date"],
         name: json["name"],
         slug: json["slug"],
-        status: json["status"] == null ? null : json["status"],
+        status: json["status"],
         summary: json["summary"],
         updatedAt: json["updated_at"],
         url: json["url"],
         checksum: json["checksum"],
-        parentGame: json["parent_game"] == null ? null : json["parent_game"],
-        rating: json["rating"] == null ? null : json["rating"],
+        parentGame: json["parent_game"],
+        rating: json["rating"],
+        screenshots: json["screenshots"] != null
+        ? ScreenshotModel.fromJsonList(json["screenshots"])
+        : null,
     );
 
     Map<String, dynamic> toMap() => {
         "id": id,
         "category": category,
-        "cover": cover == null ? null : cover,
+        "cover": cover,
         "created_at": createdAt,
-        "first_release_date": firstReleaseDate == null ? null : firstReleaseDate,
+        "first_release_date": firstReleaseDate,
         "name": name,
         "slug": slug,
-        "status": status == null ? null : status,
+        "status": status,
         "summary": summary,
         "updated_at": updatedAt,
         "url": url,
         "checksum": checksum,
-        "parent_game": parentGame == null ? null : parentGame,
-        "rating": rating == null ? null : rating,
+        "parent_game": parentGame,
+        "rating": rating,
+        "screenshots": screenshots
     };
 }

@@ -7,12 +7,13 @@ class GamesRepositoryImpl implements GamesRepository {
   GamesRepositoryImpl(this.gameRemoteDataSource);
 
   @override
-  Future<List<GameModel>?> getGames() async {
+  Future<List<GameModel>> getGames(int offset) async {
     try {
-      final games = gameRemoteDataSource.requestGames();
+      final games = gameRemoteDataSource.requestGames(offset);
       return games;
     } catch (e) {
       print(e);
+      return [];
     }
   }
 
