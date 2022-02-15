@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:floor/floor.dart';
 import 'package:game_test/core/constants.dart';
 import 'package:game_test/data/local/game_local_data_source.dart';
 import 'package:game_test/data/remote/game_remote_data_source.dart';
@@ -31,8 +30,8 @@ Future<void> initGames() async {
   sl.registerLazySingleton<GameRemoteDataSource>(
       () => GameRemoteDataSourceImp(sl()));
   
-  // final database = await $FloorGameDatabase.databaseBuilder('games_database.db').build();
-  // sl.registerLazySingleton<FloorDatabase>(() => database);
+  final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+  sl.registerLazySingleton<AppDatabase>(() => database);
 
 
   //! External

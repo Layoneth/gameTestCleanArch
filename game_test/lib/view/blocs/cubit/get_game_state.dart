@@ -13,6 +13,14 @@ class GetGameLoading extends GetGameState {
   List<Object?> get props => [];
 }
 
+class GetGameError extends GetGameState {
+  final String errorMessage;
+  GetGameError(this.errorMessage);
+
+  @override
+  List<Object?> get props => [];
+}
+
 class GetGameLoaded extends GetGameState {
   final List<GameModel> gameModels;
   final int offset;

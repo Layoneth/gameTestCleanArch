@@ -6,8 +6,20 @@ class GetGameUseCase {
   final GamesRepository gamesRepo;
   GetGameUseCase(this.gamesRepo);
 
-  Future<List<GameModel>> getGamesCall(int offset) async {
-    return gamesRepo.getGames(offset);
+  Future<List<GameModel>> getGamesCall(int? offset, {bool forceMoreGames = false}) async {
+    try {
+      final games = offset == null
+        ? await gamesRepo.getGames(forceMoreGames: forceMoreGames)
+        : await gamesRepo.getMoreGames(offset, forceMoreGames: forceMoreGames);
+
+      for (var game in games) {
+        await gamesRepo.getScreeshots(game.id);
+      }
+      return games;
+    } catch (e) {
+      print(e);
+      return [];
+    }
   }
 
 }

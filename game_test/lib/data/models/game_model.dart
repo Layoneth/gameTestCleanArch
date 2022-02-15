@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:floor/floor.dart';
-import 'package:game_test/data/models/screenshot_model.dart';
 
 @entity
 class GameModel {
@@ -10,7 +9,6 @@ class GameModel {
       required this.cover,
       required this.createdAt,
       required this.firstReleaseDate,
-      required this.screenshots,
       required this.name,
       required this.slug,
       required this.status,
@@ -28,7 +26,6 @@ class GameModel {
     final int? cover;
     final int? createdAt;
     final int? firstReleaseDate;
-    final List<ScreenshotModel>? screenshots;
     final String name;
     final String? slug;
     final int? status;
@@ -66,9 +63,6 @@ class GameModel {
         checksum: json["checksum"],
         parentGame: json["parent_game"],
         rating: json["rating"],
-        screenshots: json["screenshots"] != null
-        ? ScreenshotModel.fromJsonList(json["screenshots"])
-        : null,
     );
 
     Map<String, dynamic> toMap() => {
@@ -86,6 +80,5 @@ class GameModel {
         "checksum": checksum,
         "parent_game": parentGame,
         "rating": rating,
-        "screenshots": screenshots
     };
 }

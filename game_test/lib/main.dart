@@ -6,6 +6,7 @@ import 'package:game_test/view/blocs/cubit/get_game_cubit.dart';
 import 'package:game_test/view/pages/home.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await di.initInjection();
   runApp(const MyApp());
 }

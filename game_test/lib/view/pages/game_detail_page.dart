@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:game_test/data/models/game_model.dart';
+import 'package:game_test/data/models/screenshot_model.dart';
+import 'package:game_test/domain/repository/games_repository.dart';
+import 'package:game_test/injector_container.dart';
+import 'package:game_test/view/widgets/screenshot_image.dart';
 
 class GameDetailPage extends StatelessWidget {
   final GameModel gameModel;
@@ -7,9 +11,6 @@ class GameDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageId = gameModel.screenshots != null 
-      ? gameModel.screenshots![0].imageId
-      : 'nf6v8ax7nhzvr98qpoop';
                       
     return Scaffold(
       body: CustomScrollView(
@@ -18,39 +19,45 @@ class GameDetailPage extends StatelessWidget {
             expandedHeight: 160.0,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(gameModel.name),
-              background: Image.network(
-                'https://images.igdb.com/igdb/image/upload/t_screenshot_med/$imageId.jpg',
-                fit: BoxFit.fitWidth,
-                errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace){
-                  return Container();
-                },
-              ),
+              background: ScreenshotImage(
+                gameId: gameModel.id,
+              )
             ),
           ),
-          gameModel.screenshots != null ? SliverToBoxAdapter(
-            child: SizedBox(
-              height: 150,
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: gameModel.screenshots!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final imageIdA = gameModel.screenshots != null 
-                    ? gameModel.screenshots![index].imageId
-                    : 'nf6v8ax7nhzvr98qpoop';
-
-                  return Image.network(
-                    'https://images.igdb.com/igdb/image/upload/t_screenshot_med/$imageIdA.jpg',
+          SliverToBoxAdapter(
+            child: FutureBuilder<List<ScreenshotModel>>(
+              future: sl<GamesRepository>().getScreeshots(gameModel.id),
+              builder: (BuildContext context, AsyncSnapshot<List<ScreenshotModel>> snapshot) {
+                if (!snapshot.hasData) {
+                  return const SizedBox(
+                    width: 20,
+                    child: CircularProgressIndicator()
                   );
-                },
-              ),
-            ),
-          ) : const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 20,
-              child: Center(
-                child: Text('There are no screenshots in this game'),
-              ),
+                } else if (snapshot.data!.isEmpty) {
+                  return const SizedBox(
+                    height: 20,
+                    child: Center(
+                      child: Text('There are no screenshots in this game'),
+                    ),
+                  );
+                }
+
+                return SizedBox(
+                  height: 150,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final imageIdA = snapshot.data![index].imageId;
+
+                      return Image.network(
+                        'https://images.igdb.com/igdb/image/upload/t_screenshot_med/$imageIdA.jpg',
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ),
           const SliverToBoxAdapter(

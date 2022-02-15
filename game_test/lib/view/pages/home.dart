@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_test/view/blocs/cubit/get_game_cubit.dart';
 import 'package:game_test/view/pages/game_detail_page.dart';
+import 'package:game_test/view/widgets/screenshot_image.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -29,20 +30,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     
     return Scaffold(
-      body: BlocBuilder<GetGameCubit, GetGameState>(
-        builder: (context, state) {
-          if (state is GetGameInitial) {
-            context.read<GetGameCubit>().getGames();
-          } else if (state is GetGameLoading) {
-            return  const Center(child: CircularProgressIndicator());
-          } else if (state is GetGameLoaded) {
-            if (state.gameModels.isNotEmpty) {
-              return RefreshIndicator(
-                onRefresh: () async {
-                  context.read<GetGameCubit>().plusOffset();
-                  context.read<GetGameCubit>().getGames();
-                },
-                child: SingleChildScrollView(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<GetGameCubit>().plusOffset();
+          context.read<GetGameCubit>().getOtherGames(forceMoreGames: true);
+        },
+        child: BlocBuilder<GetGameCubit, GetGameState>(
+          builder: (context, state) {
+            if (state is GetGameInitial) {
+              context.read<GetGameCubit>().getFirstGames();
+              return const Center(child: Text('Welcome! wait the games...'));
+            } else if (state is GetGameLoading) {
+              return  const Center(child: CircularProgressIndicator());
+            } else if (state is GetGameLoaded) {
+              if (state.gameModels.isNotEmpty) {
+                return SingleChildScrollView(
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
@@ -55,9 +57,6 @@ class _HomePageState extends State<HomePage> {
                         itemCount: state.gameModels.length,
                         itemBuilder: (BuildContext context, int index) {
                           final gameModel = state.gameModels[index];
-                          final imageId = gameModel.screenshots != null 
-                            ? gameModel.screenshots![0].imageId
-                            : 'nf6v8ax7nhzvr98qpoop';
                 
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
@@ -71,13 +70,10 @@ class _HomePageState extends State<HomePage> {
                               child: Row(
                                 children: [
                                   Flexible(
-                                    child: Image.network(
-                                      'https://images.igdb.com/igdb/image/upload/t_screenshot_med/$imageId.jpg',
+                                    child: ScreenshotImage(
+                                      gameId: gameModel.id,
                                       width: 140,
-                                      errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace){
-                                        return Container();
-                                      },
-                                    ),
+                                    )
                                   ),
                                   const SizedBox(width: 8.0,),
                                   Expanded(child: Text(state.gameModels[index].name))
@@ -89,15 +85,23 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                ),
-              );
+                );
+              } else {
+                return const SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: 500,
+                    child: Center(child: Text('There are no games here!.'))
+                  ),
+                );
+              }
+            } else if (state is GetGameError) {
+              return Center(child: Text(state.errorMessage));
             } else {
-              const Text('There are no games.');
+              return const Center(child: Text('There are no games.'));
             }
-          }
-
-          return Container();
-        },
+          },
+        ),
       ),
     );
   }

@@ -13,18 +13,40 @@ class GetGameCubit extends Cubit<GetGameState> {
   List<GameModel> gamesSaved = [];
   GetGameCubit(this.getGameUseCase) : super(GetGameInitial());
 
-  Future<void> getGames() async {
-    emit(GetGameLoading());
-    final gamesSaved = await getGameUseCase.getGamesCall(offset);
-    emit(GetGameLoaded(gameModels: gamesSaved, offset: offset));
+  Future<void> getFirstGames() async {
+    try {
+      emit(GetGameLoading());
+      gamesSaved = [];
+      gamesSaved = await getGameUseCase.getGamesCall(null);
+      emit(GetGameLoaded(gameModels: gamesSaved, offset: offset));
+    } catch (e) {
+      emit(GetGameError('There was an error'));
+      print(e);
+    }
+  }
+
+  Future<void> getOtherGames({bool forceMoreGames = false}) async {
+    try {
+      emit(GetGameLoading());
+      plusOffset();
+      gamesSaved = await getGameUseCase.getGamesCall(offset, forceMoreGames: forceMoreGames);
+      emit(GetGameLoaded(gameModels: gamesSaved, offset: offset));
+    } catch (e) {
+      emit(GetGameError('There was an error'));
+      print(e);
+    }
   }
 
   Future<void> scrollGames() async {
-    plusOffset();
-    final games = await getGameUseCase.getGamesCall(offset);
-    gamesSaved.addAll(games);
-    emit(GetGameLoaded(gameModels: gamesSaved).addGames(games: gamesSaved)
-    );
+    try {
+      plusOffset();
+      final games = await getGameUseCase.getGamesCall(offset, forceMoreGames: true);
+      gamesSaved.addAll(games);
+      emit(GetGameLoaded(gameModels: gamesSaved).addGames(games: gamesSaved));
+    } catch (e) {
+      emit(GetGameError('There was an error'));
+      print(e);
+    }
   }
 
   void plusOffset(){
