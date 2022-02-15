@@ -39,7 +39,13 @@ class _HomePageState extends State<HomePage> {
           builder: (context, state) {
             if (state is GetGameInitial) {
               context.read<GetGameCubit>().getFirstGames();
-              return const Center(child: Text('Welcome! wait the games...'));
+              return Center(
+                child: Column(
+                children: const [
+                  Text('Welcome! wait the games...'),
+                  CircularProgressIndicator(),
+                ],
+              ));
             } else if (state is GetGameLoading) {
               return  const Center(child: CircularProgressIndicator());
             } else if (state is GetGameLoaded) {

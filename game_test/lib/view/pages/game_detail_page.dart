@@ -53,6 +53,9 @@ class GameDetailPage extends StatelessWidget {
 
                       return Image.network(
                         'https://images.igdb.com/igdb/image/upload/t_screenshot_med/$imageIdA.jpg',
+                        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace){
+                          return Container();
+                        },
                       );
                     },
                   ),
